@@ -32,7 +32,7 @@ from requests import RequestException
 
 from nautapy import appdata_path
 from nautapy.__about__ import __name__ as prog_name
-from nautapy.exceptions import NautaLoginException, NautaLogoutException, NautaException, NautaPreLoginException
+from nautapy.exceptions import NautaLoginException, NautaLogoutException, NautaException, NautaPreLoginException, NetworkError
 
 MAX_DISCONNECT_ATTEMPTS = 10
 
@@ -274,8 +274,12 @@ class NautaClient(object):
         self.session = None
 
     def init_session(self):
-        self.session = NautaProtocol.create_session()
-        self.session.save()
+        try:
+            self.session = NautaProtocol.create_session()
+            self.session.save()
+        except requests.ConnectionError:
+            raise NetworkError('No se pudo conectar con los servidores de Etecsa.' +
+            'Compruebe su conexión.')
 
     @property
     def is_logged_in(self):

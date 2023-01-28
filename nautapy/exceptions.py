@@ -17,3 +17,6 @@ class NautaLoginException(NautaException):
 class NautaLogoutException(NautaException):
     pass
 
+
+class NetworkError(Exception):
+    pass
